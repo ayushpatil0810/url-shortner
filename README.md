@@ -1,15 +1,53 @@
-# url-shortner
+# URL Shortener API
 
-To install dependencies:
+This document lists all the tools, technologies, and libraries used in the URL Shortener project. Ensure you have everything set up before beginning development.
+
+---
+
+## ✅ Prerequisites
+
+Make sure you have the following installed on your system:
+
+- [Node.js](https://nodejs.org/) (v18 or above recommended)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [Postman](https://www.postman.com/)
+- A code editor (e.g., [VS Code](https://code.visualstudio.com/))
+
+---
+
+## 🧱 Tech Stack Overview
+
+| Category         | Technology        | Purpose                               |
+| ---------------- | ----------------- | ------------------------------------- |
+| Backend          | Node.js + Express | REST API development                  |
+| Database         | PostgreSQL        | Relational data store                 |
+| ORM              | Drizzle ORM       | Type-safe database queries and schema |
+| Containerization | Docker + Compose  | Local PostgreSQL instance             |
+| Authentication   | JWT               | Securing private routes               |
+| Testing Tool     | Postman           | Manual API testing                    |
+
+---
+
+## 📦 BUN Dependencies
+
+Run this to install all required packages:
 
 ```bash
-bun install
+bun install express drizzle-orm pg jsonwebtoken bcrypt dotenv
 ```
 
-To run:
+## Auth Routes
 
-```bash
-bun run index.ts
-```
+| Method | Endpoint  | Description             | Auth Required |
+| ------ | --------- | ----------------------- | ------------- |
+| POST   | `/signup` | Register a new user     | ❌            |
+| POST   | `/login`  | Login and receive token | ❌            |
 
-This project was created using `bun init` in bun v1.3.6. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+## URL Routes
+
+| Method | Endpoint      | Description                                | Auth Required |
+| ------ | ------------- | ------------------------------------------ | ------------- |
+| POST   | `/shorten`    | Create a short URL from a long one         | ✅            |
+| GET    | `/:shortCode` | Redirect to the original URL               | ❌            |
+| GET    | `/urls`       | Get all URLs created by the logged-in user | ✅            |
+| DELETE | `/urls/:id`   | Delete a short URL (if it belongs to user) | ✅            |
