@@ -3,6 +3,11 @@
   "module": "index.js",
   "type": "module",
   "private": true,
+  "scripts": {
+    "dev": "bun --watch index.js",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
+  },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/express": "^5.0.6",
