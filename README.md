@@ -30,7 +30,7 @@ A URL shortening service built with Express.js, PostgreSQL, and Drizzle ORM. Thi
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/ayushpatil0810/url-shortner
 cd url-shortner
 ```
 
