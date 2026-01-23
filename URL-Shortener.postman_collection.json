@@ -1,0 +1,317 @@
+{
+  "info": {
+    "_postman_id": "url-shortener-api-2026",
+    "name": "URL Shortener API",
+    "description": "Complete API collection for URL Shortener service with authentication",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Get Server Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            },
+            "description": "Check if the server is running"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Sign Up",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('user_id', response.data.userId);",
+                  "    console.log('User ID saved:', response.data.userId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstname\": \"John\",\n  \"lastname\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"securePassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/user/signup",
+              "host": ["{{base_url}}"],
+              "path": ["user", "signup"]
+            },
+            "description": "Create a new user account"
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('auth_token', response.token);",
+                  "    console.log('Token saved to environment');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"securePassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/user/login",
+              "host": ["{{base_url}}"],
+              "path": ["user", "login"]
+            },
+            "description": "Login and receive JWT token. Token is automatically saved to environment variable."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "URL Management",
+      "item": [
+        {
+          "name": "Create Short URL (with custom code)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('url_id', response.id);",
+                  "    pm.environment.set('short_code', response.shortCode);",
+                  "    console.log('URL ID saved:', response.id);",
+                  "    console.log('Short Code:', response.shortCode);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"targetURL\": \"https://www.example.com/very/long/url/path\",\n  \"shortCode\": \"mycode\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/shorten",
+              "host": ["{{base_url}}"],
+              "path": ["shorten"]
+            },
+            "description": "Create a shortened URL with a custom short code"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Short URL (auto-generated code)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('url_id', response.id);",
+                  "    pm.environment.set('short_code', response.shortCode);",
+                  "    console.log('URL ID saved:', response.id);",
+                  "    console.log('Short Code (auto-generated):', response.shortCode);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"targetURL\": \"https://www.github.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/shorten",
+              "host": ["{{base_url}}"],
+              "path": ["shorten"]
+            },
+            "description": "Create a shortened URL with an auto-generated short code using NanoID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All URLs",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/codes",
+              "host": ["{{base_url}}"],
+              "path": ["codes"]
+            },
+            "description": "Get all shortened URLs created by the authenticated user"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Short URL",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shortCode\": \"updatedcode\",\n  \"targetURL\": \"https://www.updated-url.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{url_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{url_id}}"]
+            },
+            "description": "Update an existing shortened URL. Use the url_id from environment variables or replace with actual ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Short URL",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/{{url_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{url_id}}"]
+            },
+            "description": "Delete a shortened URL. Use the url_id from environment variables or replace with actual ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Redirect to Original URL",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/{{short_code}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{short_code}}"]
+            },
+            "description": "Redirect to the original URL using the short code. No authentication required."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ]
+}
