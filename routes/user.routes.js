@@ -55,7 +55,7 @@ router.post("/login", async (req, res) => {
   if (!user) {
     return res
       .status(404)
-      .json({ error: `User with email${email} does not exists` });
+      .json({ error: `User with email ${email} does not exists` });
   }
 
   const { password: hashedPassword } = hashPasswordWithSalt(
@@ -67,7 +67,7 @@ router.post("/login", async (req, res) => {
     return res.status(400).json({ error: "Invalid password" });
   }
 
-  const token = await creatUserToken({ id: user.id })
+  const token = await creatUserToken({ id: user.id });
 
   return res.json({ token });
 });
