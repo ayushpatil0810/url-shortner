@@ -4,8 +4,8 @@ import { ensureAuthenticated } from "../middlewares/auth.middleware.js";
 import { insertInDB } from "../services/url.service.js";
 import db from "../db/index.js";
 import { urlsTable } from "../models/url.model.js";
-import { usersTable } from "../models/user.model.js";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
+
 const router = express.Router();
 
 router.post("/shorten", ensureAuthenticated, async (req, res) => {
@@ -36,6 +36,27 @@ router.get("/codes", ensureAuthenticated, async (req, res) => {
     .where(eq(urlsTable.userId, req.user.id));
 
   return res.json({ codes });
+});
+
+router.delete("/:id", ensureAuthenticated, async (req, res) => {
+  const id = req.params.id;
+  await db
+    .delete(urlsTable)
+    .where(and(eq(urlsTable.id, id), eq(urlsTable.userId, req.user.id)));
+
+  return res.status(200).json({ deleted: true });
+});
+
+router.patch("/:id", ensureAuthenticated, async (req, res) => {
+  const { shortCode, targetURL } = req.body;
+
+  const id = req.params.id;
+  await db
+    .update(urlsTable)
+    .set({ shortCode, targetURL })
+    .where(and(eq(urlsTable.id, id), eq(urlsTable.userId, req.user.id)));
+
+  return res.status(200).json({ updated: true });
 });
 
 router.get("/:shortCode", async (req, res) => {
